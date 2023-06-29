@@ -1,0 +1,4 @@
+export SECRET_KEY_BASE=2VKcVMAWiaOFwmTcxy9QU1xVc5fcPDNsgpAuaFtw5RLOOOgXiqijPExhwnDt0qxn
+export PHX_SIGNING_SALT=m+/03tfP9MBQi7UDUcX65H1iH1PYyO+jAk/EtTuEMc1mcb+xXb3oY70CBVWqzVHj
+export DATABASE_URL=postgres://postgres:postgres@localhost:5432/basic_phx_app
+export PHX_HOST=example.com
