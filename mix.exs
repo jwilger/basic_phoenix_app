@@ -9,7 +9,8 @@ defmodule BasicPhxApp.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      preferred_cli_env: [quality: :test]
     ]
   end
 
@@ -32,6 +33,8 @@ defmodule BasicPhxApp.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false},
       {:ecto_sql, "~> 3.10"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:finch, "~> 0.13"},
@@ -46,6 +49,7 @@ defmodule BasicPhxApp.MixProject do
       {:phoenix_live_view, "~> 0.19.0"},
       {:plug_cowboy, "~> 2.5"},
       {:postgrex, ">= 0.0.0"},
+      {:sobelow, "~> 0.12", only: [:dev, :test], runtime: false},
       {:swoosh, "~> 1.3"},
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
@@ -67,7 +71,18 @@ defmodule BasicPhxApp.MixProject do
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind default", "esbuild default"],
-      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
+      compile: ["compile --warnings-as-errors"],
+      sobelow: ["sobelow --config"],
+      dialyzer: ["dialyzer --list-unused-filters"],
+      credo: ["credo --strict"],
+      check_formatting: ["format --check-formatted"],
+      quality: [
+        "check_formatting",
+        "credo",
+        "sobelow",
+        "dialyzer"
+      ]
     ]
   end
 end
