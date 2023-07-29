@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ai_coordinator
+      POSTGRES_DB: base_phx_app
     ports:
       - "5432:5432"
 
