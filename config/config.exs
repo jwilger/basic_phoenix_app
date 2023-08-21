@@ -81,6 +81,9 @@ case config_env() do
   # of environment variables, is done on config/runtime.exs.
 
   :dev ->
+    config :mix_test_interactive,
+      clear: true
+
     # Configure your database
     config :basic_phx_app, BasicPhxApp.Repo,
       stacktrace: true,
