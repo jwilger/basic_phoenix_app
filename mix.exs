@@ -41,6 +41,7 @@ defmodule BasicPhxApp.MixProject do
       {:floki, ">= 0.30.0", only: :test},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
+      {:mix_test_interactive, "~> 1.2", only: :dev, runtime: false},
       {:phoenix, "~> 1.7.6"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 3.3"},
