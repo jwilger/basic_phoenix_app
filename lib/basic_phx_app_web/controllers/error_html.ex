@@ -1,4 +1,6 @@
 defmodule BasicPhxAppWeb.ErrorHTML do
+  @moduledoc false
+
   use BasicPhxAppWeb, :html
 
   # If you want to customize your error pages,

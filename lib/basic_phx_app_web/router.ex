@@ -1,4 +1,6 @@
 defmodule BasicPhxAppWeb.Router do
+  @moduledoc false
+
   use BasicPhxAppWeb, :router
 
   pipeline :browser do

@@ -1,4 +1,6 @@
 defmodule BasicPhxAppWeb.Endpoint do
+  @moduledoc false
+
   use Phoenix.Endpoint, otp_app: :basic_phx_app
 
   # The session will be stored in the cookie and signed,

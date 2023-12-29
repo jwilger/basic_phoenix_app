@@ -17,8 +17,16 @@ defmodule BasicPhxAppWeb do
   those modules here.
   """
 
+  @doc """
+  Returns the static paths for the application.
+  """
+  @spec static_paths() :: [String.t()]
   def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
 
+  @doc """
+  Returns the router configuration for the application.
+  """
+  @spec router() :: Macro.t()
   def router do
     quote do
       use Phoenix.Router, helpers: false
@@ -30,12 +38,20 @@ defmodule BasicPhxAppWeb do
     end
   end
 
+  @doc """
+  Returns the channel configuration for the application.
+  """
+  @spec channel() :: Macro.t()
   def channel do
     quote do
       use Phoenix.Channel
     end
   end
 
+  @doc """
+  Returns the controller configuration for the application.
+  """
+  @spec controller() :: Macro.t()
   def controller do
     quote do
       use Phoenix.Controller,
@@ -49,6 +65,10 @@ defmodule BasicPhxAppWeb do
     end
   end
 
+  @doc """
+  Returns the live view configuration for the application.
+  """
+  @spec live_view() :: Macro.t()
   def live_view do
     quote do
       use Phoenix.LiveView,
@@ -58,6 +78,10 @@ defmodule BasicPhxAppWeb do
     end
   end
 
+  @doc """
+  Returns the live component configuration for the application.
+  """
+  @spec live_component() :: Macro.t()
   def live_component do
     quote do
       use Phoenix.LiveComponent
@@ -66,6 +90,10 @@ defmodule BasicPhxAppWeb do
     end
   end
 
+  @doc """
+  Returns the HTML configuration for the application.
+  """
+  @spec html() :: Macro.t()
   def html do
     quote do
       use Phoenix.Component
@@ -95,6 +123,10 @@ defmodule BasicPhxAppWeb do
     end
   end
 
+  @doc """
+  Returns the verified routes for the application.
+  """
+  @spec verified_routes() :: Macro.t()
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
@@ -107,6 +139,7 @@ defmodule BasicPhxAppWeb do
   @doc """
   When used, dispatch to the appropriate controller/view/etc.
   """
+  @spec __using__(atom()) :: Macro.t()
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
   end
