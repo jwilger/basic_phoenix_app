@@ -35,13 +35,21 @@ defmodule BasicPhxApp.MixProject do
     [
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:doctor, "~> 0.21", only: :dev, runtime: false},
       {:ecto_sql, "~> 3.10"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
+      {:eventually, "~> 1.1", only: :test},
+      {:ex_check, "~> 0.15", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.30", only: [:dev, :test], runtime: false},
+      {:faker, "0.17.0", only: :test},
       {:finch, "~> 0.16"},
       {:floki, "~> 0.35", only: :test},
       {:gettext, "~> 0.23"},
       {:jason, "~> 1.4"},
+      {:knigge, "~> 1.4"},
+      {:mix_audit, "~> 2.1", only: :dev, runtime: false},
       {:mix_test_interactive, "~> 1.2", only: :dev, runtime: false},
+      {:mox, "~> 1.1", only: :test},
       {:phoenix, "~> 1.7"},
       {:phoenix_ecto, "~> 4.4"},
       {:phoenix_html, "~> 3.3"},
@@ -51,10 +59,15 @@ defmodule BasicPhxApp.MixProject do
       {:plug_cowboy, "~> 2.6"},
       {:postgrex, "~> 0.17"},
       {:sobelow, "~> 0.13", only: [:dev, :test], runtime: false},
+      {:stream_data, "~> 0.6"},
       {:swoosh, "~> 1.14"},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
-      {:telemetry_poller, "~> 1.0"}
+      {:telemetry_poller, "~> 1.0"},
+      {:typed_ecto_schema, "~> 0.4"},
+      {:typed_struct, "~> 0.3"},
+      {:uuid, "~> 1.1"},
+      {:vex, "~> 0.9"}
     ]
   end
 
@@ -77,13 +90,7 @@ defmodule BasicPhxApp.MixProject do
       sobelow: ["sobelow --config"],
       dialyzer: ["dialyzer --list-unused-filters"],
       credo: ["credo --strict"],
-      check_formatting: ["format --check-formatted"],
-      quality: [
-        "check_formatting",
-        "credo",
-        "sobelow",
-        "dialyzer"
-      ]
+      check_formatting: ["format --check-formatted"]
     ]
   end
 end

@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "github.vscode-pull-request-github",
+        "benvp.vscode-hex-pm-intellisense",
+        "phoenixframework.phoenix",
+        "jakebecker.elixir-ls",
+        "pantajoe.vscode-elixir-credo",
+        "samuel-pordeus.elixir-jump-to-test",
+        "bradlc.vscode-tailwindcss"
+    ]
+}
