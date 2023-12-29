@@ -27,6 +27,7 @@ if [[ $# -eq 2 ]]; then
     fi
 
     cp .envrc-sample .envrc
+    direnv allow
 
     mix do deps.get deps.compile format
     rm setup_app.sh
