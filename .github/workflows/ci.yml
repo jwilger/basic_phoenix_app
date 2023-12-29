@@ -1,0 +1,237 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: dev
+  cancel-in-progress: false
+
+jobs:
+  get-backend-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Github Repo
+        uses: actions/checkout@v3
+      - name: Sets up an Erlang/OTP environment
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.16.0
+          otp-version: 26.0
+      - name: Retrieve cached dependencies
+        uses: actions/cache@v3
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: ${{runner.os}}-mix-${{hashFiles('**/mix.lock')}}
+          restore-keys: |
+            ${{runner.os}}-mix-
+      - name: Install dependencies
+        if: steps.mix-cache.outputs.cache-hit != 'true'
+        run: |
+          echo $PWD
+          ls -al
+          mix local.rebar --force 
+          mix local.hex --force 
+          mix deps.get 
+          mix deps.compile
+
+  compile-backend:
+    needs: get-backend-dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Github Repo
+        uses: actions/checkout@v3
+      - name: Sets up an Erlang/OTP environment
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.16.0
+          otp-version: 26.0
+      - name: Retrieve cached dependencies
+        uses: actions/cache@v3
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: ${{runner.os}}-mix-${{hashFiles('**/mix.lock')}}
+          restore-keys: |
+            ${{runner.os}}-mix-
+      - name: Build application
+        run: mix clean && mix compile
+
+  mix-test:
+    needs: compile-backend
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgres:latest
+        ports: [ '5432:5432' ]
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout Github repo
+        uses: actions/checkout@v3
+      - name: Sets up an Erlang/OTP environment
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.16.0
+          otp-version: 26.0
+      - name: Retrieve cached dependencies
+        uses: actions/cache@v3
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: ${{runner.os}}-mix-${{hashFiles('**/mix.lock')}}
+          restore-keys: |
+            ${{runner.os}}-mix-
+      - run: mix test
+
+  mix-format:
+    needs: compile-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Github repo
+        uses: actions/checkout@v3
+      - name: Sets up an Erlang/OTP environment
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.16.0
+          otp-version: 26.0
+      - name: Retrieve cached dependencies
+        uses: actions/cache@v3
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: ${{runner.os}}-mix-${{hashFiles('**/mix.lock')}}
+          restore-keys: |
+            ${{runner.os}}-mix-
+      - run: mix check_formatting
+
+  mix-credo:
+    needs: compile-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Github repo
+        uses: actions/checkout@v3
+      - name: Sets up an Erlang/OTP environment
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.16.0
+          otp-version: 26.0
+      - name: Retrieve cached dependencies
+        uses: actions/cache@v3
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: ${{runner.os}}-mix-${{hashFiles('**/mix.lock')}}
+          restore-keys: |
+            ${{runner.os}}-mix-
+      - run: mix credo
+
+  mix-sobelow:
+    needs: compile-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Github repo
+        uses: actions/checkout@v3
+      - name: Sets up an Erlang/OTP environment
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.16.0
+          otp-version: 26.0
+      - name: Retrieve cached dependencies
+        uses: actions/cache@v3
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: ${{runner.os}}-mix-${{hashFiles('**/mix.lock')}}
+          restore-keys: |
+            ${{runner.os}}-mix-
+      - run: mix sobelow
+
+  mix-doctor:
+    needs: compile-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Github repo
+        uses: actions/checkout@v3
+      - name: Sets up an Erlang/OTP environment
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.16.0
+          otp-version: 26.0
+      - name: Retrieve cached dependencies
+        uses: actions/cache@v3
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: ${{runner.os}}-mix-${{hashFiles('**/mix.lock')}}
+          restore-keys: |
+            ${{runner.os}}-mix-
+      - run: mix doctor
+
+  mix-audit:
+    needs: compile-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Github repo
+        uses: actions/checkout@v3
+      - name: Sets up an Erlang/OTP environment
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.16.0
+          otp-version: 26.0
+      - name: Retrieve cached dependencies
+        uses: actions/cache@v3
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: ${{runner.os}}-mix-${{hashFiles('**/mix.lock')}}
+          restore-keys: |
+            ${{runner.os}}-mix-
+      - run: mix do deps.audit hex.audit
+
+  mix-dialyzer:
+    needs: compile-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Github repo
+        uses: actions/checkout@v3
+      - name: Sets up an Erlang/OTP environment
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.16.0
+          otp-version: 26.0
+      - name: Retrieve cached dependencies
+        uses: actions/cache@v3
+        id: mix-cache
+        with:
+          path: |
+            deps
+            _build
+          key: ${{runner.os}}-mix-${{hashFiles('**/mix.lock')}}
+          restore-keys: |
+            ${{runner.os}}-mix-
+      - run: mix dialyzer
