@@ -31,6 +31,7 @@ if [[ $# -eq 2 ]]; then
 
     mix do deps.get deps.compile format
     rm setup_app.sh
+    rm LICENSE
 else
     echo "Usage: ./setup_app.sh {ModuleName} {app_name}"
     exit 1
