@@ -8,7 +8,7 @@
 /deps/
 
 # Where 3rd-party dependencies like ExDoc output generated docs.
-/doc/
+/priv/static/doc/
 
 # Ignore .fetch files in case you like to edit your project deps locally.
 /.fetch
@@ -36,3 +36,6 @@ npm-debug.log
 /assets/node_modules/
 
 .envrc
+
+# Dialyzer artifacts
+*.plt

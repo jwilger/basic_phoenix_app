@@ -1,7 +1,7 @@
 # /home/jwilger/.config/tmuxinator/apex.yml
 
-name: basic_phoenix_app
-root: ~/projects/basic_phoenix_app
+name: basic_phx_app
+root: ~/projects/basic_phx_app
 
 # Optional tmux socket
 # socket_name: foo

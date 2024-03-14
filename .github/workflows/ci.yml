@@ -49,12 +49,12 @@ jobs:
     needs: compile
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: postgres://postgres:postgres@localhost/basic_phoenix_app
+      DATABASE_URL: postgres://postgres:postgres@localhost/basic_phx_app
     services:
       db:
         image: postgres:latest
         env:
-          POSTGRES_DB: basic_phoenix_app_test
+          POSTGRES_DB: basic_phx_app_test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
