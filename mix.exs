@@ -10,7 +10,18 @@ defmodule BasicPhxApp.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      preferred_cli_env: [quality: :test]
+      preferred_cli_env: [quality: :test],
+      docs: [
+        main: "readme",
+        name: "BasicPhxApp",
+        extras: ["README.md"],
+        source_url: "https://github.com/jwilger/basic_phoenix_app",
+        output: "priv/static/doc"
+      ],
+      dialyzer: [
+        plt_local_path: "priv/plts/project.plt",
+        plt_core_path: "priv/plts/core.plt"
+      ]
     ]
   end
 
