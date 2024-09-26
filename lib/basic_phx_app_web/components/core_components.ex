@@ -16,9 +16,10 @@ defmodule BasicPhxAppWeb.CoreComponents do
   """
   use Phoenix.Component
 
+  use Gettext, backend: BasicPhxAppWeb.Gettext
+
   alias Phoenix.HTML.Form
   alias Phoenix.LiveView.JS
-  import BasicPhxAppWeb.Gettext
 
   @doc """
   Renders a modal.
