@@ -39,3 +39,5 @@ npm-debug.log
 
 # Dialyzer artifacts
 *.plt
+.nix-hex
+.nix-mix

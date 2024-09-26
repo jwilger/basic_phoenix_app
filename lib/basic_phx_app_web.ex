@@ -58,8 +58,9 @@ defmodule BasicPhxAppWeb do
         formats: [:html, :json],
         layouts: [html: BasicPhxAppWeb.Layouts]
 
+      use Gettext, backend: BasicPhxAppWeb.Gettext
+
       import Plug.Conn
-      import BasicPhxAppWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -109,11 +110,12 @@ defmodule BasicPhxAppWeb do
 
   defp html_helpers do
     quote do
+      use Gettext, backend: BasicPhxAppWeb.Gettext
+
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation
       import BasicPhxAppWeb.CoreComponents
-      import BasicPhxAppWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
