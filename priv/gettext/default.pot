@@ -11,13 +11,13 @@
 msgid ""
 msgstr ""
 
-#: lib/basic_phx_app_web/components/core_components.ex:483
+#: lib/basic_phx_app_web/components/core_components.ex:484
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr ""
 
-#: lib/basic_phx_app_web/components/core_components.ex:77
-#: lib/basic_phx_app_web/components/core_components.ex:131
+#: lib/basic_phx_app_web/components/core_components.ex:78
+#: lib/basic_phx_app_web/components/core_components.ex:132
 #, elixir-autogen, elixir-format
 msgid "close"
 msgstr ""
