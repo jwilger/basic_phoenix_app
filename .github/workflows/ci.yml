@@ -7,7 +7,7 @@ on:
 env:
   CI: true
   ELIXIR_VERSION: '1.17.3'
-  OTP_VERSION: '26.2'
+  OTP_VERSION: '27.0'
   PHX_SIGNING_SALT: fake-value-for-testing
   SECRET_KEY_BASE: fake-value-for-testing
 jobs:
@@ -35,59 +35,30 @@ jobs:
           path: |
             _build
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
+          restore-keys: |
+            ${{ runner.os }}-${{ github.ref }}-build-
+            ${{ runner.os }}-refs/heads/main-build-
       - name: Install Dependencies
         if: steps.mix-cache.outputs.cache-hit != 'true'
         run: mix deps.get
-      - run: mix clean
       - run: mix compile
   test:
     needs: compile
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost/basic_phx_app
-    services:
-      db:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: basic_phx_app_test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
+      - name: Run docker-compose
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: './docker-compose.yml'
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
           elixir-version: ${{ env.ELIXIR_VERSION }}
           otp-version: ${{ env.OTP_VERSION }}
-      - name: Cache mix dependencies
-        id: mix-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-      - name: Cache Compilation Artifacts
-        id: build-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            _build
-          key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
-      - name: Cache Test Compilation Artifacts
-        id: test-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            _build/test
-          key: ${{ runner.os }}-${{ github.ref }}-test-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-test-
-      - run: MIX_ENV=test mix clean
+      - run: mix deps.get
       - run: mix test
   format:
     needs: compile
@@ -113,7 +84,9 @@ jobs:
           path: |
             _build
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
+          restore-keys: |
+            ${{ runner.os }}-${{ github.ref }}-build-
+            ${{ runner.os }}-refs/heads/main-build-
       - run: mix format --check-formatted
   credo:
     needs: compile
@@ -139,7 +112,9 @@ jobs:
           path: |
             _build
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
+          restore-keys: |
+            ${{ runner.os }}-${{ github.ref }}-build-
+            ${{ runner.os }}-refs/heads/main-build-
       - run: mix credo
   sobelow:
     needs: compile
@@ -165,34 +140,10 @@ jobs:
           path: |
             _build
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
+          restore-keys: |
+            ${{ runner.os }}-${{ github.ref }}-build-
+            ${{ runner.os }}-refs/heads/main-build-
       - run: mix sobelow
-  doctor:
-    needs: compile
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Elixir
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: ${{ env.ELIXIR_VERSION }}
-          otp-version: ${{ env.OTP_VERSION }}
-      - name: Cache mix dependencies
-        id: mix-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            deps
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-      - name: Cache Compilation Artifacts
-        id: build-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            _build
-          key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
-      - run: mix doctor
   audit:
     needs: compile
     runs-on: ubuntu-latest
@@ -217,11 +168,41 @@ jobs:
           path: |
             _build
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
+          restore-keys: |
+            ${{ runner.os }}-${{ github.ref }}-build-
+            ${{ runner.os }}-refs/heads/main-build-
       - run: |
           mix deps.audit
           mix hex.audit
           mix deps.unlock --check-unused
+  gettext:
+    needs: compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ env.ELIXIR_VERSION }}
+          otp-version: ${{ env.OTP_VERSION }}
+      - name: Cache mix dependencies
+        id: mix-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+      - name: Cache Compilation Artifacts
+        id: build-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            _build
+          key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ github.ref }}-build-
+            ${{ runner.os }}-refs/heads/main-build-
+      - run: mix gettext.extract --check-up-to-date
   dialyzer:
     needs: compile
     runs-on: ubuntu-latest
@@ -246,7 +227,9 @@ jobs:
           path: |
             _build
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
+          restore-keys: |
+            ${{ runner.os }}-${{ github.ref }}-build-
+            ${{ runner.os }}-refs/heads/main-build-
       - name: Cache Dialyzer PLTs
         id: dialyzer-cache
         uses: actions/cache@v4
@@ -254,5 +237,26 @@ jobs:
           path: |
             priv/plts
           key: ${{ runner.os }}-${{ github.ref }}-dialyzer-${{ github.sha }}
-          restore-keys: ${{ runner.os }}-${{ github.ref }}-dialyzer-
+          restore-keys: |
+            ${{ runner.os }}-${{ github.ref }}-dialyzer-
+            ${{ runner.os }}-refs/heads/main-dialyzer-
       - run: mix dialyzer
+# # EXAMPLE DEPLOY STEP:
+#   deploy:
+#     needs:
+#       - test
+#       - format
+#       - credo
+#       - sobelow
+#       - audit
+#       - dialyzer
+#       - gettext
+#     runs-on: ubuntu-latest
+#     concurrency: deploy-group
+#     if: github.ref == 'refs/heads/main'
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: superfly/flyctl-actions/setup-flyctl@master
+#       - run: flyctl deploy --remote-only
+#         env:
+#           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
