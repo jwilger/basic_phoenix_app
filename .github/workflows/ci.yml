@@ -1,18 +1,15 @@
 name: CI
-
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
-
+    branches: [main]
 env:
   CI: true
-  ELIXIR_VERSION: '1.16.2'
+  ELIXIR_VERSION: '1.17.3'
   OTP_VERSION: '26.2'
   PHX_SIGNING_SALT: fake-value-for-testing
   SECRET_KEY_BASE: fake-value-for-testing
-
 jobs:
   compile:
     runs-on: ubuntu-latest
@@ -44,7 +41,6 @@ jobs:
         run: mix deps.get
       - run: mix clean
       - run: mix compile
-
   test:
     needs: compile
     runs-on: ubuntu-latest
@@ -60,10 +56,7 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - name: Set up Elixir
@@ -96,7 +89,6 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ github.ref }}-test-
       - run: MIX_ENV=test mix clean
       - run: mix test
-
   format:
     needs: compile
     runs-on: ubuntu-latest
@@ -123,7 +115,6 @@ jobs:
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
           restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
       - run: mix format --check-formatted
-
   credo:
     needs: compile
     runs-on: ubuntu-latest
@@ -150,7 +141,6 @@ jobs:
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
           restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
       - run: mix credo
-
   sobelow:
     needs: compile
     runs-on: ubuntu-latest
@@ -177,7 +167,6 @@ jobs:
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
           restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
       - run: mix sobelow
-
   doctor:
     needs: compile
     runs-on: ubuntu-latest
@@ -204,7 +193,6 @@ jobs:
           key: ${{ runner.os }}-${{ github.ref }}-build-${{ github.sha }}
           restore-keys: ${{ runner.os }}-${{ github.ref }}-build-
       - run: mix doctor
-
   audit:
     needs: compile
     runs-on: ubuntu-latest
@@ -234,7 +222,6 @@ jobs:
           mix deps.audit
           mix hex.audit
           mix deps.unlock --check-unused
-
   dialyzer:
     needs: compile
     runs-on: ubuntu-latest
