@@ -44,6 +44,7 @@ defmodule BasicPhxApp.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:config_helper, "~> 1.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:doctor, "~> 0.21", only: :dev, runtime: false},

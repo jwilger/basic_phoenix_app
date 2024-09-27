@@ -1,5 +1,5 @@
 import Config
-import BasicPhxApp.ConfigHelpers
+import ConfigHelper
 
 database_url =
   get_env("DATABASE_URL", "ecto://postgres:postgres@localhost/basic_phx_app_#{config_env()}")
