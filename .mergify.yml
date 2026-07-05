@@ -2,7 +2,7 @@ queue_rules:
   - name: default
     merge_method: squash
     branch_protection_injection_mode: queue
-    queue_conditions:
+    queue_conditions: &default_conditions
       - "base = main"
       - "-draft"
       - "-conflict"
@@ -19,23 +19,7 @@ queue_rules:
       - "check-success = gettext"
       - "check-success = sobelow"
       - "check-success = test"
-    merge_conditions:
-      - "base = main"
-      - "-draft"
-      - "-conflict"
-      - "#approved-reviews-by >= 1"
-      - "#changes-requested-reviews-by = 0"
-      - "github-review-approved"
-      - "github-require-last-push-approval"
-      - "github-code-owner-review-satisfied"
-      - "check-success = audit"
-      - "check-success = compile"
-      - "check-success = credo"
-      - "check-success = dialyzer"
-      - "check-success = format"
-      - "check-success = gettext"
-      - "check-success = sobelow"
-      - "check-success = test"
+    merge_conditions: *default_conditions
 
 merge_protections_settings:
   reporting_method: check-runs
@@ -46,20 +30,4 @@ merge_protections:
   - name: default
     if:
       - "base = main"
-    success_conditions:
-      - "base = main"
-      - "-draft"
-      - "-conflict"
-      - "#approved-reviews-by >= 1"
-      - "#changes-requested-reviews-by = 0"
-      - "github-review-approved"
-      - "github-require-last-push-approval"
-      - "github-code-owner-review-satisfied"
-      - "check-success = audit"
-      - "check-success = compile"
-      - "check-success = credo"
-      - "check-success = dialyzer"
-      - "check-success = format"
-      - "check-success = gettext"
-      - "check-success = sobelow"
-      - "check-success = test"
+    success_conditions: *default_conditions
