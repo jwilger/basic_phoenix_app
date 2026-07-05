@@ -49,7 +49,6 @@ defmodule BasicPhxApp.MixProject do
       {:config_helper, "~> 1.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:earmark, "~> 1.4"},
       {:ecto_sql, "~> 3.10"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:eventually, "~> 1.1", only: :test},
